@@ -1,0 +1,469 @@
+ 
+
+    1. array和linked list区别，stack和queue的区别。
+    2. c++中static的含义和用法。
+    It's life cycle is throughout the whole program. 
+    class A  
+    { 
+        private:
+        static void func(int value);
+    };
+    A::func()
+
+    As a static variable, it is allocated when the program is initialized. 
+    You can find it before main with debugger. 
+
+void * malloc(size_t size);
+用malloc 申请一块长度为length 的整数类型的内存，程序如下：
+int *p = (int *) malloc(sizeof(int) * length);
+我们应当把注意力集中在两个要素上：“类型转换”和“sizeof”。
+1、malloc 返回值的类型是void *，所以在调用malloc 时要显式地进行类型转换，将void * 转换成所需要的指针类型。
+2、 malloc 函数本身并不识别要申请的内存是什么类型，它只关心内存的总字节数。
+
+void free( void * memblock );
+为什么free 函数不象malloc 函数那样复杂呢？这是因为指针p 的类型以及它所指的内存的容量事先都是知道的，语句free(p)能正确地释放内存。如果p 是NULL 指针，那么free
+对p 无论操作多少次都不会出问题。如果p 不是NULL 指针，那么free 对p连续操作两次就会导致程序运行错误。
+
+int *p2 = new int[length];
+这是因为new 内置了sizeof、类型转换和类型安全检查功能。对于非内部数据类型的对象而言，new 在创建动态对象的同时完成了初始化工作。如果对象有多个构造函数，那么new 的语句也可以有多种形式。
+如果用new 创建对象数组，那么只能使用对象的无参数构造函数。例如
+Obj *objects = new Obj[100];       // 创建100 个动态对象
+不能写成
+Obj *objects = new Obj[100](1);        // 创建100 个动态对象的同时赋初值1
+在用delete 释放对象数组时，留意不要丢了符号‘[]’。例如
+delete []objects; // 正确的用法
+delete objects; // 错误的用法
+后者相当于delete objects[0]，漏掉了另外99 个对象。
+
+
+        1、new自动计算需要分配的空间，而malloc需要手工计算字节数
+        2、new是类型安全的，而malloc不是，比如：
+                 int* p = new float[2]; // 编译时指出错误
+                 int* p = malloc(2*sizeof(float)); // 编译时无法指出错误
+          new operator 由两步构成，分别是 operator new 和 construct
+        3、operator new对应于malloc，但operator new可以重载，可以自定义内存分配策略，甚至不做内存分配，甚至分配到非内存设备上。而malloc无能为力
+        4、new将调用constructor，而malloc不能；delete将调用destructor，而free不能。
+        5、malloc/free要库文件支持，new/delete则不要。 
+
+
+2、联系
+既然new/delete的功能完全覆盖了malloc/free，为什么C++还保留malloc/free呢？因为C++程序经常要调用C函数，而C程序只能用malloc/free管理动态内存。如果用free释放“new创建的动态对象”，那么该对象因无法执行析构函数而可能导致程序出错。如果用delete释放“malloc申请的动态内存”，理论上讲程序不会出错，但是该程序的可读性很差。所以new/delete、malloc/free必须配对使用。
+
+
+    3. new/delete, malloc/free区别。
+    问了一些基础知识 比如array和linkedlist分别用哪些些排序算法更好；知道哪些数据结构；quicksort的complexity； 
+
+
+
+
+
+
+
+
+ ，判断两个string是否具有circular equivalence. 也就是看能否把string A rotate一次，变成string B。在hackerrank上写的。 后来又问了道validate BST。最后是why BB。。。此时时间已过去1个多小时。。 
+ 第一个问题是 C++ 语言本身的。要求实现一个 Class A， 里面有一个 foo()，别人可能会写一个 B 来继承你的 A，那么： 1、B必须实现foo() 2、如果他没有实现foo()，提供一个默认的实现 我说那要实现1的话就是虚函数，2的话就是纯虚函数，她表示了肯定，又问如果要同时满足这两个要求怎么办？我就愣了……这两个要求本身逻辑上不就是矛盾的么……如果1都已经“必须”了，那还提供默认实现是怎么回事= =。我想了各种方法似乎都不是她想要的答案。最后她说我已经很接近了答案了就下一题了。可能还是没听清理解错意思了吧。 
+ 
+
+ 刚刚面完，只写了一道题。貌似还没有写对肯定是跪了啊 之前看地里的电面 面经都挺简单的啊，说好的twosum呢呢呢呢 趁着fresh memory， 赶紧回忆题目回报地里 B家貌似最开始都会问个简历上的project，然后问几个基本的java，pyhton问题，thread啊什么的 然后就开始写算法了： 0 1 2 3 4 0 3 0 1 7 0 3 0 1 7 0 3 3 1 7 如果start在【2, 1】点，那么我们target就是3， 那么就找所有能reach的3做成的图形的边数。 比如这个就是返回10. 
+
+链接: https://instant.1point3acres.com/thread/180246
+来源: 一亩三分地
+
+
+
+def maxContinuousSeq(input):
+    from collections import Counter 
+    inputSet = Counter(input)
+    #{100:2, 99: 1}
+    maxLen = 0
+    currentRangeSet = set()
+    traversed = set()
+    for num in inputSet.keys():
+        if num in traversed: continue
+        currentLen = inputSet[num]
+        traversed.add(num)
+        temp = num
+        while temp - 1 in inputSet:
+            traversed.add(temp - 1)
+            currentLen += inputSet[temp - 1]
+            temp -= 1
+        temp = num
+        while temp + 1 in inputSet:
+            traversed.add(temp + 1)
+            currentLen += inputSet[temp + 1]
+            temp += 1
+        maxLen = max(maxLen, currentLen)
+ 
+    return maxLen
+
+arr = [100,3,99,5,3,5,8,6,101,4,7,100,98,9,102,7,2]
+correct = [98, 99, 100, 100, 101]
+print maxContinuousSeq(arr)
+print sorted(arr)
+
+
+
+
+
+376 Wiggle Subsequence  35.4%       Medium  
+375 Guess Number Higher or Lower II 28.1%       Medium  
+374 Guess Number Higher or Lower    31.5%       Easy    
+373 Find K Pairs with Smallest Sums 25.8%       Medium  
+372 Super Pow   30.5%       Medium  
+371 Sum of Two Integers 52.0%       Easy    
+370 Range Addition  49.8%       Medium  
+369 Plus One Linked List    49.4%       Medium  
+368 Largest Divisible Subset    30.6%       Medium  
+367 Valid Perfect Square    36.7%       Medium  
+366 Find Leaves of Binary Tree  52.9%       Medium  
+365 Water and Jug Problem   22.0%       Medium  
+364 Nested List Weight Sum II   46.7%       Medium  
+363 Max Sum of Rectangle No Larger Than K   29.4%       Hard    
+362 Design Hit Counter  49.1%       Medium  
+361 Bomb Enemy  34.2%       Medium  
+360 Sort Transformed Array  40.5%       Medium  
+359 Logger Rate Limiter     56.1%       Easy    
+358 Rearrange String k Distance Apart   28.1%       Hard    
+357 Count Numbers with Unique Digits    42.7%       Medium  
+356 Line Reflection     27.9%       Medium  
+355 Design Twitter  23.1%       Medium  
+354 Russian Doll Envelopes  28.9%       Hard    
+353 Design Snake Game   23.0%       Medium  
+352 Data Stream as Disjoint Intervals   37.1%       Hard    
+351 Android Unlock Patterns     36.7%       Medium  
+350 Intersection of Two Arrays II   41.6%       Easy    
+349 Intersection of Two Arrays  44.5%       Easy    
+348 Design Tic-Tac-Toe  43.5%       Medium  
+347 Top K Frequent Elements 43.3%       Medium  
+346 Moving Average from Data Stream     56.6%       Easy    
+345 Reverse Vowels of a String  36.1%       Easy    
+344 Reverse String  58.7%       Easy    
+343 Integer Break   42.5%       Medium  
+342 Power of Four   35.4%       Easy    
+341 Flatten Nested List Iterator    32.0%       Medium  
+340 Longest Substring with At Most K Distinct Characters    38.8%       Hard    
+339 Nested List Weight Sum  57.2%       Easy    
+338 Counting Bits   57.6%       Medium  
+337 House Robber III    38.7%       Medium  
+335 Self Crossing   21.3%       Hard    
+334 Increasing Triplet Subsequence  35.4%       Medium  
+333 Largest BST Subtree     27.1%       Medium  
+332 Reconstruct Itinerary   25.7%       Medium  
+331 Verify Preorder Serialization of a Binary Tree  32.8%       Medium  
+330 Patching Array  30.2%       Hard    
+329 Longest Increasing Path in a Matrix 33.0%       Hard    
+328 Odd Even Linked List    39.7%       Medium  
+327 Count of Range Sum  27.4%       Hard    
+326 Power of Three  37.9%       Easy    
+325 Maximum Size Subarray Sum Equals k  40.4%       Medium  
+324 Wiggle Sort II  23.6%       Medium  
+323 Number of Connected Components in an Undirected Graph   43.6%       Medium  
+322 Coin Change 25.4%       Medium      
+320 Generalized Abbreviation    41.3%       Medium  
+319 Bulb Switcher   41.2%       Medium  
+318 Maximum Product of Word Lengths 40.5%       Medium  
+317 Shortest Distance from All Buildings    31.8%       Hard    
+315 Count of Smaller Numbers After Self 31.7%       Hard    
+314 Binary Tree Vertical Order Traversal    32.1%       Medium  
+313 Super Ugly Number   35.5%       Medium  
+312 Burst Balloons  39.0%       Hard    
+311 Sparse Matrix Multiplication    48.1%       Medium  
+310 Minimum Height Trees    27.4%       Medium  
+309 Best Time to Buy and Sell Stock with Cooldown   37.9%       Medium  
+308 Range Sum Query 2D - Mutable    21.2%       Hard    
+307 Range Sum Query - Mutable   18.3%       Medium  
+306 Additive Number 26.5%       Medium    
+304 Range Sum Query 2D - Immutable  22.4%       Medium  
+303 Range Sum Query - Immutable 25.4%       Easy    
+302 Smallest Rectangle Enclosing Black Pixels   40.6%       Hard    
+301 Remove Invalid Parentheses  32.9%       Hard     
+299 Bulls and Cows  31.1%       Easy    
+298 Binary Tree Longest Consecutive Sequence    37.6%       Medium  
+297 Serialize and Deserialize Binary Tree   29.0%       Hard    
+296 Best Meeting Point  48.2%       Hard    
+295 Find Median from Data Stream    22.3%       Hard    
+294 Flip Game II    42.3%       Medium  
+293 Flip Game   50.9%       Easy    
+292 Nim Game    53.8%       Easy    
+291 Word Pattern II     35.7%       Hard    
+290 Word Pattern    30.4%       Easy    
+289 Game of Life    35.3%       Medium  
+288 Unique Word Abbreviation    15.8%       Easy    
+287 Find the Duplicate Number   39.9%       Hard    
+285 Inorder Successor in BST    35.9%       Medium  
+284 Peeking Iterator    34.3%       Medium  
+283 Move Zeroes     45.5%       Easy    
+282 Expression Add Operators    26.1%       Hard    
+281 Zigzag Iterator     44.5%       Medium  
+280 Wiggle Sort     51.0%       Medium  
+279 Perfect Squares 33.8%       Medium  
+278 First Bad Version   23.1%       Easy    
+277 Find the Celebrity  35.2%       Medium  
+276 Paint Fence     32.0%       Easy    
+275 H-Index II  33.0%       Medium  
+274 H-Index 30.3%       Medium     
+272 Closest Binary Search Tree Value II     35.1%       Hard    
+271 Encode and Decode Strings   27.3%       Medium  
+270 Closest Binary Search Tree Value    35.3%       Easy    
+269 Alien Dictionary    24.1%       Hard    
+268 Missing Number  41.5%       Medium  
+267 Palindrome Permutation II   29.1%       Medium  
+266 Palindrome Permutation  52.1%       Easy    
+265 Paint House II  36.0%       Hard    
+264 Ugly Number II  29.5%       Medium  
+263 Ugly Number 37.5%       Easy    
+261 Graph Valid Tree    33.9%       Medium  
+260 Single Number III   45.8%       Medium  
+259 3Sum Smaller    39.0%       Medium  
+258 Add Digits  49.3%       Easy    
+257 Binary Tree Paths   30.4%       Easy    
+256 Paint House     43.6%       Medium  
+255 Verify Preorder Sequence in Binary Search Tree  37.5%       Medium  
+254 Factor Combinations     36.4%       Medium  
+253 Meeting Rooms II    35.8%       Medium  
+252 Meeting Rooms   42.9%       Easy    
+251 Flatten 2D Vector   35.4%       Medium  
+250 Count Univalue Subtrees     37.9%       Medium  
+249 Group Shifted Strings   33.4%       Easy    
+248 Strobogrammatic Number III  28.2%       Hard    
+247 Strobogrammatic Number II   35.4%       Medium  
+246 Strobogrammatic Number  37.2%       Easy    
+245 Shortest Word Distance III  46.9%       Medium  
+244 Shortest Word Distance II   35.5%       Medium  
+243 Shortest Word Distance  47.7%       Easy    
+242 Valid Anagram   43.1%       Easy    
+241 Different Ways to Add Parentheses   37.4%       Medium  
+240 Search a 2D Matrix II   35.6%       Medium  
+239 Sliding Window Maximum  28.7%       Hard    
+238 Product of Array Except Self    44.2%       Medium  
+237 Delete Node in a Linked List    44.3%       Easy    
+236 Lowest Common Ancestor of a Binary Tree 28.8%       Medium  
+235 Lowest Common Ancestor of a Binary Search Tree  37.5%       Easy    
+234 Palindrome Linked List  29.5%       Easy    
+233 Number of Digit One     25.6%       Hard    
+232 Implement Queue using Stacks    34.3%       Easy    
+231 Power of Two    37.8%       Easy    
+230 Kth Smallest Element in a BST   39.3%       Medium  
+229 Majority Element II 26.5%       Medium  
+228 Summary Ranges  25.4%       Medium  
+227 Basic Calculator II 26.2%       Medium  
+226 Invert Binary Tree  47.1%       Easy    
+225 Implement Stack using Queues    30.8%       Easy      
+223 Rectangle Area  30.7%       Easy    
+222 Count Complete Tree Nodes   26.0%       Medium  
+221 Maximal Square  24.5%       Medium  
+220 Contains Duplicate III  19.1%       Medium  
+219 Contains Duplicate II   30.5%       Easy    
+218 The Skyline Problem     23.5%       Hard    
+217 Contains Duplicate  42.3%       Easy    
+216 Combination Sum III 37.9%       Medium  
+215 Kth Largest Element in an Array 34.6%       Medium  
+214 Shortest Palindrome     20.7%       Hard    
+213 House Robber II 31.6%       Medium  
+211 Add and Search Word - Data structure design 20.2%       Medium  
+210 Course Schedule II  21.9%       Medium  
+209 Minimum Size Subarray Sum   27.6%       Medium  
+208 Implement Trie (Prefix Tree)    25.5%       Medium  
+207 Course Schedule 28.1%       Medium  
+206 Reverse Linked List 40.8%       Easy    
+205 Isomorphic Strings  30.8%       Easy    
+204 Count Primes    25.2%       Easy    
+203 Remove Linked List Elements 29.6%       Easy    
+202 Happy Number    37.6%       Easy    
+201 Bitwise AND of Numbers Range    31.6%       Medium  
+200 Number of Islands   29.1%       Medium  
+199 Binary Tree Right Side View 36.1%       Medium  
+198 House Robber    35.5%       Easy    
+191 Number of 1 Bits    37.7%       Easy    
+190 Reverse Bits    29.4%       Easy    
+189 Rotate Array    22.0%       Easy    
+188 Best Time to Buy and Sell Stock IV  23.0%       Hard    
+187 Repeated DNA Sequences  26.9%       Medium  
+186 Reverse Words in a String II    29.0%       Medium  
+179 Largest Number  19.9%       Medium  
+174 Dungeon Game    21.6%       Hard    
+173 Binary Search Tree Iterator 36.0%       Medium  
+172 Factorial Trailing Zeroes   33.6%       Easy    
+171 Excel Sheet Column Number   43.1%       Easy    
+170 Two Sum III - Data structure design     23.4%       Easy    
+169 Majority Element    42.6%       Easy    
+168 Excel Sheet Column Title    22.7%       Easy    
+167 Two Sum II - Input array is sorted  49.1%       Medium   
+165 Compare Version Numbers 18.2%       Easy    
+164 Maximum Gap 27.4%       Hard    
+163 Missing Ranges  30.0%       Medium  
+162 Find Peak Element   33.8%       Medium  
+161 One Edit Distance   29.1%       Medium  
+160 Intersection of Two Linked Lists    30.5%       Easy    
+159 Longest Substring with At Most Two Distinct Characters  36.1%       Hard    
+158 Read N Characters Given Read4 II - Call multiple times  23.8%       Hard    
+157 Read N Characters Given Read4   29.4%       Easy    
+156 Binary Tree Upside Down     39.2%       Medium  
+155 Min Stack   23.5%       Easy    
+154 Find Minimum in Rotated Sorted Array II 35.0%       Hard    
+153 Find Minimum in Rotated Sorted Array    37.1%       Medium  
+152 Maximum Product Subarray    22.9%       Medium  
+151 Reverse Words in a String   15.8%       Medium  
+150 Evaluate Reverse Polish Notation    24.4%       Medium  
+149 Max Points on a Line    14.7%       Hard    
+148 Sort List   25.7%       Medium  
+147 Insertion Sort List 30.3%       Medium  
+146 LRU Cache   15.8%       Hard    
+145 Binary Tree Postorder Traversal 36.4%       Hard    
+144 Binary Tree Preorder Traversal  40.9%       Medium  
+143 Reorder List    23.5%       Medium  
+142 Linked List Cycle II    31.3%       Medium  
+141 Linked List Cycle   36.4%       Easy    
+140 Word Break II   20.5%       Hard    
+139 Word Break  26.1%       Medium  
+138 Copy List with Random Pointer   26.1%       Hard    
+137 Single Number II    38.6%       Medium  
+136 Single Number   50.9%       Medium  
+135 Candy   23.0%       Hard    
+134 Gas Station 27.8%       Medium  
+133 Clone Graph 24.9%       Medium  
+132 Palindrome Partitioning II  22.4%       Hard    
+131 Palindrome Partitioning 28.4%       Medium  
+130 Surrounded Regions  16.6%       Medium  
+129 Sum Root to Leaf Numbers    33.5%       Medium       
+125 Valid Palindrome    24.4%       Easy    
+124 Binary Tree Maximum Path Sum    23.9%       Hard    
+123 Best Time to Buy and Sell Stock III 27.1%       Hard    
+122 Best Time to Buy and Sell Stock II  43.4%       Medium  
+121 Best Time to Buy and Sell Stock 36.9%       Easy    
+120 Triangle    31.0%       Medium  
+119 Pascal's Triangle II    33.3%       Easy    
+118 Pascal's Triangle   34.5%       Easy    
+117 Populating Next Right Pointers in Each Node II  33.0%       Hard    
+116 Populating Next Right Pointers in Each Node 36.6%       Medium  
+115 Distinct Subsequences   29.4%       Hard    
+114 Flatten Binary Tree to Linked List  31.8%       Medium  
+113 Path Sum II 29.2%       Medium  
+112 Path Sum    31.8%       Easy    
+111 Minimum Depth of Binary Tree    31.2%       Easy    
+110 Balanced Binary Tree    34.8%       Easy    
+109 Convert Sorted List to Binary Search Tree   31.3%       Medium  
+108 Convert Sorted Array to Binary Search Tree  38.3%       Medium  
+107 Binary Tree Level Order Traversal II    35.1%       Easy    
+106 Construct Binary Tree from Inorder and Postorder Traversal  29.7%       Medium  
+105 Construct Binary Tree from Preorder and Inorder Traversal   29.4%       Medium  
+104 Maximum Depth of Binary Tree    48.9%       Easy    
+103 Binary Tree Zigzag Level Order Traversal    29.7%       Medium  
+102 Binary Tree Level Order Traversal   34.0%       Easy    
+101 Symmetric Tree  34.9%       Easy    
+100 Same Tree   43.9%       Easy    
+99  Recover Binary Search Tree  27.3%       Hard    
+98  Validate Binary Search Tree 21.3%       Medium  
+97  Interleaving String 23.0%       Hard    
+96  Unique Binary Search Trees  38.2%       Medium  
+95  Unique Binary Search Trees II   29.4%       Medium  
+94  Binary Tree Inorder Traversal   40.9%       Medium  
+93  Restore IP Addresses    24.3%       Medium  
+92  Reverse Linked List II  28.6%       Medium  
+91  Decode Ways 17.9%       Medium  
+90  Subsets II  31.6%       Medium  
+89  Gray Code   37.5%       Medium  
+88  Merge Sorted Array  30.5%       Easy    
+87  Scramble String 27.2%       Hard    
+86  Partition List  30.3%       Medium        
+83  Remove Duplicates from Sorted List  37.5%       Easy    
+82  Remove Duplicates from Sorted List II   27.5%       Medium  
+81  Search in Rotated Sorted Array II   32.3%       Medium  
+80  Remove Duplicates from Sorted Array II  33.5%       Medium  
+78  Subsets 32.9%       Medium  
+77  Combinations    35.7%       Medium  
+76  Minimum Window Substring    22.0%       Hard    
+75  Sort Colors 35.4%       Medium  
+74  Search a 2D Matrix  34.5%       Medium  
+73  Set Matrix Zeroes   34.1%       Medium  
+72  Edit Distance   29.3%       Hard    
+71  Simplify Path   22.6%       Medium  
+70  Climbing Stairs 37.4%       Easy    
+69  Sqrt(x) 25.9%       Medium  
+68  Text Justification  16.7%       Hard    
+67  Add Binary  28.5%       Easy    
+66  Plus One    34.9%       Easy    
+65  Valid Number    12.3%       Hard    
+64  Minimum Path Sum    35.7%       Medium  
+63  Unique Paths II 29.9%       Medium  
+62  Unique Paths    37.2%       Medium  
+61  Rotate List 23.3%       Medium  
+60  Permutation Sequence    25.8%       Medium  
+59  Spiral Matrix II    36.1%       Medium  
+58  Length of Last Word 30.0%       Easy    
+57  Insert Interval 24.6%       Hard    
+56  Merge Intervals 26.3%       Hard    
+55  Jump Game   28.7%       Medium  
+54  Spiral Matrix   23.2%       Medium  
+53  Maximum Subarray    37.2%       Medium  
+52  N-Queens II 40.5%       Hard    
+51  N-Queens    26.8%       Hard    
+50  Pow(x, n)   27.7%       Medium  
+49  Group Anagrams  28.8%       Medium  
+48  Rotate Image    35.5%       Medium  
+47  Permutations II 28.9%       Medium  
+46  Permutations    37.2%       Medium  
+45  Jump Game II    25.6%       Hard    
+44  Wildcard Matching   18.0%       Hard    
+  
+42  Trapping Rain Water 33.1%       Hard    
+41  First Missing Positive  24.2%       Hard    
+40  Combination Sum II  28.7%       Medium  
+39  Combination Sum 32.3%       Medium  
+38  Count and Say   30.2%       Easy    
+37  Sudoku Solver   25.9%       Hard    
+36  Valid Sudoku    31.8%       Easy    
+35  Search Insert Position  37.9%       Medium  
+34  Search for a Range  29.7%       Medium  
+33  Search in Rotated Sorted Array  30.8%       Hard    
+32  Longest Valid Parentheses   22.7%       Hard    
+31  Next Permutation    27.1%       Medium  
+30  Substring with Concatenation of All Words   21.2%       Hard    
+  
+28  Implement strStr()  25.6%       Easy    
+27  Remove Element  35.0%       Easy    
+26  Remove Duplicates from Sorted Array 34.2%       Easy    
+25  Reverse Nodes in k-Group    28.3%       Hard    
+24  Swap Nodes in Pairs 36.0%       Easy    
+23  Merge k Sorted Lists    24.2%       Hard    
+22  Generate Parentheses    38.5%       Medium  
+21  Merge Two Sorted Lists  36.3%       Easy    
+20  Valid Parentheses   30.2%       Easy    
+19  Remove Nth Node From End of List    30.4%       Easy    
+18  4Sum    24.5%       Medium  
+17  Letter Combinations of a Phone Number   29.8%       Medium  
+16  3Sum Closest    29.7%       Medium  
+15  3Sum    19.5%       Medium  
+14  Longest Common Prefix   29.1%       Easy    
+13  Roman to Integer    40.9%       Easy    
+12  Integer to Roman    40.3%       Medium  
+11  Container With Most Water   35.3%       Medium  
+10  Regular Expression Matching     22.5%       Hard    
+9   Palindrome Number   32.5%       Easy    
+8   String to Integer (atoi)    13.7%       Easy    
+7   Reverse Integer 23.8%       Easy    
+6   ZigZag Conversion   24.8%       Easy    
+5   Longest Palindromic Substring   23.6%       Medium  
+4   Median of Two Sorted Arrays 19.3%       Hard    
+3   Longest Substring Without Repeating Characters  22.7%       Medium  
+2   Add Two Numbers 24.2%       Medium  
+1   Two Sum 25.0%       Easy    
+
+
+
+
+不熟。
+
+
+29 Divide Two Integers.
+166 Fraction to Recurring Decimal.
+300 Longest Increasing Subsequence   
+43  Multiply Strings    24.3%       Medium
+305 Number of Islands II    35.3%       Hard 
+127 Word Ladder 19.7%       Medium  
+126 Word Ladder II  13.7%       Hard  
+316 Remove Duplicate Letters    26.3%       Hard    
+321 Create Maximum Number   22.2%       Hard
+286 Walls and Gates     38.5%       Medium  
+336 Palindrome Pairs    21.3%       Hard    
+
